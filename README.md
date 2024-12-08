@@ -39,7 +39,31 @@ Think of 0x40 as a bookmark. A bookmark is where you store different important t
 
 Now, when you need to access a website you stored in the bookmark, you first click on "bookmark" and then click on the website to access it. 
 
-0x40 does a similar thing like a bookmark. That's why it is called a pointer - free memory pointer. 0x40 is a bookmark that has different values stored temporarily in it. When you need to access any value, you must call 0x40 
+0x40 does a similar thing like a bookmark. That's why it is called a pointer - free memory pointer. 0x40 is a bookmark that has different values stored temporarily in it. When you need to access any value, you must call 0x40 (the bookmark) plus the position of the value you want to access. Here's a simple example:
+
+```
+contract MultipleValues {
+
+    function storeMultipleValues() public pure returns (uint256 value2) {
+        assembly {
+            // Store multiple values
+            let ptr := mload(0x40)        // ptr = 0x80 (128 in decimal)
+             mstore(ptr, 100)              // First value at 0x80
+             mstore(add(ptr, 0x20), 200)   // Second value at 0xA0
+             mstore(add(ptr, 0x40), 300)   // Third value at 0xC0
+             mstore(0x40, add(ptr, 0x60))  // Update pointer
+
+             // Then read value and return this
+             value2 := mload(add(ptr, 0x20))  // Gets 200
+            }
+         }
+    }
+```
+mload is used to load or get a value from a particular position in Memory. mstore is used to store a value to the Memory. Note the "assembly { }" declaration and the use of ":=" to assign a variable. "add" means add ptr and 0x20 together.
+
+Run the code. You would see it returns 200.
+
+Back to 
 
 
 
