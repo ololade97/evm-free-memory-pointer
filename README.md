@@ -59,11 +59,40 @@ contract MultipleValues {
          }
     }
 ```
-mload is used to load or get a value from a particular position in Memory. mstore is used to store a value to the Memory. Note the "assembly { }" declaration and the use of ":=" to assign a variable. "add" means add ptr and 0x20 together.
+mload is used to load or get a value from a particular position in Memory. mstore is used to store a value to the Memory. Note the "assembly { }" declaration (meaning this is an assembly code) and the use of ":=" to assign a variable. "add" means add ptr and 0x20 together. "let" is used to declare a variable.
 
-Run the code. You would see it returns 200.
+Run the code. You would see it returns 200. To access other stored values, at the last line, change 0x20 to 0x40.
 
-Back to 
+Back to 0x40. The above example stores different values to the free memory through the free memory pointer. And it updates the free memory pointer and then returns the value stored at ptr (0x40) by adding 0x20 to it. This returns 200. To access other stored values, at the last line, change 0x20 to 0x40. To access the first value stored, that is 100, change the last line to:
+
+```
+ value2 := mload(ptr)  // Gets 100
+```
+You might want to ask why we started by loading and storing 0x40 to the varialbe "ptr" and why the comment after it says "ptr = 0x80". 
+
+Remember the Memory Layout? 0x40 is second in the layout and the free Memory pointer (the bookmark). But where did "0x80" come from?
+
+0x80 is the default value stored in 0x40. That is, 0x40 stores 0x80. This automatically points to 0x80 (free memory) - the fourth in the Memory layout where values are written. This leads us to the first rule.
+
+Important rule one:
+Don't directly store value in 0x40. When you do, 0x40 that should serve as a pointer would be corrupted. 
+
+You might have noticed that in the example code, 0x40 is the basis of all other values stored in the memory. And that is why we didn't store a value in it directly in the example code. Rather, we stored it in a variable:
+
+```
+let ptr := mload(0x40) 
+```
+Because if we store a value directly in 0x40 like so:
+
+```
+mstore(0x40, 100)
+```
+0x40 won't point to 0x80 anymore. Like I said before, 0x80 is the starting place where you can store a value. And that's why 0x40 is pointing to the free memory 0x80.
+
+
+
+
+
 
 
 
