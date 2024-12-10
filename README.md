@@ -68,16 +68,18 @@ Back to 0x40. The above example stores different values to the free memory throu
 ```
  value2 := mload(ptr)  // Gets 100
 ```
-You might want to ask why we started by loading and storing 0x40 to the varialbe "ptr" and why the comment after it says "ptr = 0x80". 
+You might want to ask why we started by loading and storing 0x40 to the variable "ptr" and the comment in front of it says "ptr = 0x80". 
 
 Remember the Memory Layout? 0x40 is second in the layout and the free Memory pointer (the bookmark). But where did "0x80" come from?
 
-0x80 is the default value stored in 0x40. That is, 0x40 stores 0x80. This automatically points to 0x80 (free memory) - the fourth in the Memory layout where values are written. This leads us to the first rule.
+0x80 is the default value stored in 0x40. That is, 0x40 stores 0x80. This automatically points to 0x80 (free memory) - the fourth in the Memory layout where values are written. You might want to ask, "But mstore only store values, and not that it changes and point to the position a value can be stored at?". We will talk about this down the line.
+
+This leads us to the first rule.
 
 Important rule one:
 Don't directly store value in 0x40. When you do, 0x40 that should serve as a pointer would be corrupted. 
 
-You might have noticed that in the example code, 0x40 is the basis of all other values stored in the memory. And that is why we didn't store a value in it directly in the example code. Rather, we stored it in a variable:
+You might have noticed that in the example code, 0x40 is the basis of all other values stored in the memory. And that is why we didn't store a value in it directly in the example code. Rather, we stored 0x40 and its default value (0x80) in a variable:
 
 ```
 let ptr := mload(0x40) 
@@ -87,7 +89,7 @@ Because if we store a value directly in 0x40 like so:
 ```
 mstore(0x40, 100)
 ```
-0x40 won't point to 0x80 anymore. Like I said before, 0x80 is the starting place where you can store a value. And that's why 0x40 is pointing to the free memory 0x80.
+0x40 won't point to 0x80 anymore. Like I said earlier, 0x80 is the starting place where you can store a value. And that's why 0x40 is pointing to the free memory 0x80.
 
 
 
