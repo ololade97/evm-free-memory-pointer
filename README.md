@@ -96,12 +96,19 @@ You've seen a glimpse of how to use the free memory pointer in the storeMultiple
 
 So, when for instance, you want to store four different values, here how it should go:
 
+```
+function storeValues() public pure returns (uint256) {
 assembly {
 let ptr := mload(0x40) //this points to 0x80 as the place you can start to store values and stores 0x80 in "ptr"
 mstore(ptr, 100) // stores 100 at 0x80 - the first free memory position
 mstore(add(ptr, 0x20), 200) //stores 200 at 0xA0 - the second free memory position
 mstore(add(ptr, 0x40), 300) //stores 300 at 0xC0 - the third free memory position
-}
+
+ // Then read value and return this
+             value2 := mload(add(ptr, 0x40))  // Gets 300
+  }
+)
+```
 
 Why is 0x20, 0x40 added to ptr?
 
@@ -112,7 +119,7 @@ mstore(ptr, 100) // takes 32 bytes
 mstore(add(ptr, 0x20), 200) // also takes 32 bytes
 ```
 
-In mstore(ptr, 100), 100 is stored at 0x80. What this mstore(add(ptr, 0x20), 200) is saying is - add 0x20 to 0x80. The addition givees you this new free memory position - 0xA0. We would talk about how this is so soon. Now store 200 in 0xA0.
+In mstore(ptr, 100), 100 is stored at 0x80. What "mstore(add(ptr, 0x20), 200)" is saying is - add 0x20 to 0x80. The addition givees you this new free memory position - 0xA0. We would talk about how this is so soon. Now store 200 in 0xA0.
 
 By doing this, 200 will not overwrite 100. You can access either of the value by declaring as done above:
 
@@ -156,6 +163,10 @@ function memoryCorruption() public {
 Important rule:
 
 Ensure there's always 32 bytes difference in memory position between stored values in the same memory storage.
+
+You can now decide to update the pointer after storing values in memory storage like so:
+
+ mstore(0x40, add(ptr, 0x60))  // Update pointer
 
 
 
