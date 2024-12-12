@@ -168,6 +168,8 @@ You can now decide to update the pointer after storing values in memory storage 
 
  mstore(0x40, add(ptr, 0x60))  // Update pointer
 
+This leads us to the two use cases of "mstore".
+
 
 
 
