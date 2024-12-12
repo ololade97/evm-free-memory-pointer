@@ -112,8 +112,33 @@ mstore(ptr, 100) // takes 32 bytes
 mstore(add(ptr, 0x20), 200) // also takes 32 bytes
 ```
 
-In mstore(ptr, 100), 100 is stored at 0x80
-mstore(add(ptr, 0x20), 200)
+In mstore(ptr, 100), 100 is stored at 0x80. What this mstore(add(ptr, 0x20), 200) is saying is - add 0x20 to 0x80. The addition givees you this new free memory position - 0xA0. We would talk about how this is so soon. Now store 200 in 0xA0.
+
+By doing this, 200 will not overwrite 100. You can access either of the value by declaring as done above:
+
+```
+mload(add(ptr, 0x20)
+mload(add(ptr, 0x40)
+```
+Try this to experience the overwrite:
+
+```
+function overwrite() public {
+   assembly {
+     let ptr := mload(0x40)
+     mstore(ptr, 100)
+     mstore(ptr, 200)
+  }
+}
+```
+Did you also notice that the values added to "ptr" are 32 bytes every time. 0x20 means 32bytes. 0x40 means 64 bytes?
+
+We stored 3 values:
+
+First value used 32 bytes (0x20) - 100
+Second value used 32 bytes (0x20) - 200
+Third value used 32 bytes (0x20) - 300
+Total = 96 bytes (0x60)
 
   
 
