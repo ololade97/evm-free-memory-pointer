@@ -154,6 +154,7 @@ function memoryCorruption() public {
 }
 ```
 Important rule:
+
 Ensure there's always 32 bytes difference in memory position between stored values in the same memory storage.
 
 
