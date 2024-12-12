@@ -72,7 +72,7 @@ You might want to ask why we started by loading and storing 0x40 to the variable
 
 Remember the Memory Layout? 0x40 is second in the layout and the free Memory pointer (the bookmark). But where did "0x80" come from?
 
-0x80 is the default value stored in 0x40. That is, 0x40 stores 0x80. This automatically points to 0x80 (free memory) - the fourth in the Memory layout where values are written. You might want to ask, "But mstore only store values, and not that it changes and point to the position a value can be stored at?". We will talk about this down the line.
+0x80 is the default value stored in 0x40. That is, 0x40 stores 0x80. This automatically points to 0x80 (free memory) - the fourth in the Memory layout where values are written. You might want to ask, "But mstore only store values, and not that it changes and point to the position a value can be stored at?". We will talk about this down the line in mstore use cases.
 
 This leads us to the first rule.
 
@@ -89,8 +89,33 @@ Because if we store a value directly in 0x40 like so:
 ```
 mstore(0x40, 100)
 ```
-0x40 won't point to 0x80 anymore. Like I said earlier, 0x80 is the starting place where you can store a value. And that's why 0x40 is pointing to the free memory 0x80.
+0x40 won't point to 0x80 anymore. Like I said earlier, 0x80 is the starting place where you can store a value. And that's why 0x40 is pointing to the free memory start point - 0x80.
 
+# How to use free memory pointer
+You've seen a glimpse of how to use the free memory pointer in the storeMultipleValues function example above. The free memory pointer is 0x40. By default, it tells you that the free memory you can store a value to starts from 0x80. 
+
+So, when for instance, you want to store four different values, here how it should go:
+
+assembly {
+let ptr := mload(0x40) //this points to 0x80 as the place you can start to store values and stores 0x80 in "ptr"
+mstore(ptr, 100) // stores 100 at 0x80 - the first free memory position
+mstore(add(ptr, 0x20), 200) //stores 200 at 0xA0 - the second free memory position
+mstore(add(ptr, 0x40), 300) //stores 300 at 0xC0 - the third free memory position
+}
+
+Why is 0x20, 0x40 added to ptr?
+
+This is done to avoid overwriting the previous value. Every time you call "mstore", the full capacity it can store in the memory at a call is 32 bytes. This means for every value you store in memory, it takes the full 32 bytes. Unlike in storage slot, there's no packing here.
+
+```
+mstore(ptr, 100) // takes 32 bytes
+mstore(add(ptr, 0x20), 200) // also takes 32 bytes
+```
+
+In mstore(ptr, 100), 100 is stored at 0x80
+mstore(add(ptr, 0x20), 200)
+
+  
 
 
 
