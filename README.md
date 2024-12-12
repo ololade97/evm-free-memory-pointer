@@ -143,8 +143,11 @@ Did you also notice that the values added to "ptr" are 32 bytes every time. 0x20
 We stored 3 values:
 
 First value used 32 bytes (0x20) - 100
+
 Second value used 32 bytes (0x20) - 200
+
 Third value used 32 bytes (0x20) - 300
+
 Total = 96 bytes (0x60)
 
 Every time a value is stored in memory and you want to store more values, 32 bytes must be added. Anything less than that would cause memory corruption and you would get "0".
