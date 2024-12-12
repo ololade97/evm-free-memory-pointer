@@ -140,9 +140,19 @@ Second value used 32 bytes (0x20) - 200
 Third value used 32 bytes (0x20) - 300
 Total = 96 bytes (0x60)
 
-  
+Every time a value is stored in memory and you want to store more values, 32 bytes must be added. Anything less than that would cause memory corruption and you would get "0".
 
+Try this to experience memory corruption:
 
+```
+function memoryCorruption() public {
+   assembly {
+     let ptr := mload(0x40)
+     mstore(ptr, 100)
+     mstore(30, 200)
+  }
+}
+```
 
 
 
